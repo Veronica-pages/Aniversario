@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tiempo desde el 23 de septiembre</title>
+
+  <!-- 📱 Importante para mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #ffd6e8, #fbcfe8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      gap: 20px;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    /* 🌈 Contenedor de banderas */
+    .flags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .flag {
+      width: 70px;
+      height: 45px;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+
+    .trans {
+      background: linear-gradient(
+        to bottom,
+        #5BCEFA 20%,
+        #F5A9B8 20% 40%,
+        #FFFFFF 40% 60%,
+        #F5A9B8 60% 80%,
+        #5BCEFA 80%
+      );
+    }
+
+    .pan {
+      background: linear-gradient(
+        to bottom,
+        #FF218C 33%,
+        #FFD800 33% 66%,
+        #21B1FF 66%
+      );
+    }
+
+    .bi {
+      background: linear-gradient(
+        to bottom,
+        #D60270 40%,
+        #9B4F96 40% 60%,
+        #0038A8 60%
+      );
+    }
+
+    .cards {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 25px 20px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 15px 30px rgba(236, 72, 153, 0.25);
+      backdrop-filter: blur(10px);
+      width: 100%;
+      max-width: 350px;
+    }
+
+    h1 {
+      color: #ec4899;
+      margin-bottom: 15px;
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .time span {
+      display: block;
+      font-size: 1.1em;
+      margin: 5px 0;
+      color: #9d174d;
+    }
+
+    .heart {
+      font-size: 1.8em;
+      animation: latido 1.2s infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes latido {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    /* 📱 Ajustes para pantallas chicas */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1rem;
+      }
+
+      .time span {
+        font-size: 1em;
+      }
+
+      .flag {
+        width: 60px;
+        height: 40px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 🌈 BANDERAS -->
+  <div class="flags">
+    <div class="flag trans"></div>
+    <div class="flag pan"></div>
+    <div class="flag bi"></div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="heart">💗</div>
+      <h1>Tiempo transcurrido</h1>
+      <div class="time" id="resultado"></div>
+    </div>
+
+    <div class="card">
+      <div class="heart">🎉</div>
+      <h1>Falta para el próximo 23 de septiembre</h1>
+      <div class="time" id="faltante"></div>
+    </div>
+  </div>
+
+  <script>
+    const fechaInicio = new Date("2025-09-23T00:00:00");
+
+    function obtenerProximo23() {
+      const ahora = new Date();
+      let añoActual = ahora.getFullYear();
+      let proximo = new Date(añoActual, 8, 23);
+
+      if (ahora > proximo) {
+        proximo = new Date(añoActual + 1, 8, 23);
+      }
+
+      return proximo;
+    }
+
+    function calcularDiferenciaCompleta(inicio, fin) {
+      let años = fin.getFullYear() - inicio.getFullYear();
+      let meses = fin.getMonth() - inicio.getMonth();
+      let dias = fin.getDate() - inicio.getDate();
+
+      if (dias < 0) {
+        meses--;
+        const ultimoMes = new Date(fin.getFullYear(), fin.getMonth(), 0);
+        dias += ultimoMes.getDate();
+      }
+
+      if (meses < 0) {
+        años--;
+        meses += 12;
+      }
+
+      return { años, meses, dias };
+    }
+
+    function actualizarTiempo() {
+      const ahora = new Date();
+
+      const transcurrido = calcularDiferenciaCompleta(fechaInicio, ahora);
+      const diffSeg = Math.floor((ahora - fechaInicio) / 1000);
+
+      const horas = Math.floor((diffSeg / 3600) % 24);
+      const minutos = Math.floor((diffSeg / 60) % 60);
+      const segundos = diffSeg % 60;
+
+      document.getElementById("resultado").innerHTML = `
+        <span>🎀 ${transcurrido.años} años</span>
+        <span>🌷 ${transcurrido.meses} meses</span>
+        <span>🌸 ${transcurrido.dias} días</span>
+        <span>🕒 ${horas} horas</span>
+        <span>💌 ${minutos} minutos</span>
+        <span>✨ ${segundos} segundos</span>
+      `;
+
+      const proximo23 = obtenerProximo23();
+      const faltante = calcularDiferenciaCompleta(ahora, proximo23);
+      const diffFaltanteSeg = Math.floor((proximo23 - ahora) / 1000);
+
+      const horasF = Math.floor((diffFaltanteSeg / 3600) % 24);
+      const minutosF = Math.floor((diffFaltanteSeg / 60) % 60);
+      const segundosF = diffFaltanteSeg % 60;
+
+      document.getElementById("faltante").innerHTML = `
+        <span>🎀 ${faltante.años} años</span>
+        <span>🌷 ${faltante.meses} meses</span>
+        <span>🌸 ${faltante.dias} días</span>
+        <span>🕒 ${horasF} horas</span>
+        <span>💌 ${minutosF} minutos</span>
+        <span>✨ ${segundosF} segundos</span>
+      `;
+    }
+
+    actualizarTiempo();
+    setInterval(actualizarTiempo, 1000);
+  </script>
+
+</body>
+</html>
